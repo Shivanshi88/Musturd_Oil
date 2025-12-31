@@ -66,8 +66,8 @@ const Footer = () => {
             <div className="flex gap-3 items-start">
               <FiMapPin className="text-yellow-400 mt-1" />
               <p>
-                Industrial Area, Sector 5 <br />
-                Rajasthan, India – 302001
+               Pinahat Agra
+                 283123
               </p>
             </div>
 
