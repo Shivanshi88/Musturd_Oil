@@ -1,7 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
+  const [status, setStatus] = useState("");
+
+  // Input change handler
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Form submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("Sending...");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus(data.error || "Failed to send message");
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("Error sending message");
+    }
+  };
+
   return (
     <section className="bg-gray-50 py-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -19,15 +57,14 @@ const Contact = () => {
 
         {/* Info Cards */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          
           <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition text-center">
             <FiMapPin className="text-yellow-400 text-4xl mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Our Location
             </h3>
             <p className="text-gray-600">
-              Vill Mahgauli, Karkoli, Pinahat <br />
-              Agra – 283123
+             <br />
+             Pinahat Agra – 283123
             </p>
           </div>
 
@@ -36,9 +73,7 @@ const Contact = () => {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Call Us
             </h3>
-            <p className="text-gray-600">
-              +91 6395291600
-            </p>
+            <p className="text-gray-600">+91 6395291600</p>
           </div>
 
           <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition text-center">
@@ -46,11 +81,8 @@ const Contact = () => {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Email Us
             </h3>
-            <p className="text-gray-600">
-              vipuloilmill@gmail.com
-            </p>
+            <p className="text-gray-600">vipuloilmill@gmail.com</p>
           </div>
-
         </div>
 
         {/* Contact Form Card */}
@@ -59,13 +91,17 @@ const Contact = () => {
             Send Us a Message
           </h3>
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-gray-700 mb-1">Name</label>
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Your full name"
                 className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                required
               />
             </div>
 
@@ -73,17 +109,25 @@ const Contact = () => {
               <label className="block text-gray-700 mb-1">Email</label>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Your email address"
                 className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                required
               />
             </div>
 
             <div>
               <label className="block text-gray-700 mb-1">Message</label>
               <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 rows="4"
                 placeholder="Write your message here..."
                 className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                required
               ></textarea>
             </div>
 
@@ -93,9 +137,11 @@ const Contact = () => {
             >
               Send Message
             </button>
+
+            {/* Status message */}
+            {status && <p className="text-center mt-2 text-gray-700">{status}</p>}
           </form>
         </div>
-
       </div>
     </section>
   );
