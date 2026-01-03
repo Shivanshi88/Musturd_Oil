@@ -20,28 +20,26 @@ const Contact = () => {
     setStatus("Sending...");
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      let data;
+      // Read the response text once
+      const text = await res.text();
+      let data = null;
       try {
-        data = await res.json(); // Try parsing JSON
-      } catch (err) {
-        // Agar JSON nahi hai, console me response dikhao
-        const text = await res.text();
-        console.error("Response is not JSON:", text);
-        setStatus("Error sending message: Backend response not valid JSON");
-        return;
+        data = JSON.parse(text); // Try parsing JSON
+      } catch {
+        console.warn("Backend response is not valid JSON:", text);
       }
 
       if (res.ok) {
         setStatus("Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
       } else {
-        setStatus(data.error || "Failed to send message");
+        setStatus(data?.error || "Failed to send message");
       }
     } catch (error) {
       console.error("Fetch error:", error);
@@ -71,8 +69,8 @@ const Contact = () => {
               Our Location
             </h3>
             <p className="text-gray-600">
-             <br />
-             Pinahat Agra – 283123
+              <br />
+              Pinahat Agra – 283123
             </p>
           </div>
 
@@ -141,7 +139,8 @@ const Contact = () => {
 
             <button
               type="submit"
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 rounded-full transition"
+              disabled={status === "Sending..."}
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 rounded-full transition disabled:opacity-50"
             >
               Send Message
             </button>
