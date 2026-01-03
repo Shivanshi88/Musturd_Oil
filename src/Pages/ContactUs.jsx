@@ -20,14 +20,22 @@ const Contact = () => {
     setStatus("Sending...");
 
     try {
-      // Backend URL from environment variable
       const res = await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json(); // Try parsing JSON
+      } catch (err) {
+        // Agar JSON nahi hai, console me response dikhao
+        const text = await res.text();
+        console.error("Response is not JSON:", text);
+        setStatus("Error sending message: Backend response not valid JSON");
+        return;
+      }
 
       if (res.ok) {
         setStatus("Message sent successfully!");
@@ -36,7 +44,7 @@ const Contact = () => {
         setStatus(data.error || "Failed to send message");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Fetch error:", error);
       setStatus("Error sending message");
     }
   };
@@ -44,7 +52,6 @@ const Contact = () => {
   return (
     <section className="bg-gray-50 py-20">
       <div className="max-w-7xl mx-auto px-6">
-
         {/* Heading */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800">
