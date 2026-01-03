@@ -20,21 +20,23 @@ const Contact = () => {
     setStatus("Sending...");
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/contact`, {
+      // Step 3: Fetch request to Render backend
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      // Read the response text once
+      // Step 4: Safe JSON parsing
       const text = await res.text();
       let data = null;
       try {
-        data = JSON.parse(text); // Try parsing JSON
+        data = JSON.parse(text);
       } catch {
         console.warn("Backend response is not valid JSON:", text);
       }
 
+      // Step 5: Status update
       if (res.ok) {
         setStatus("Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
@@ -56,8 +58,7 @@ const Contact = () => {
             Get In <span className="text-yellow-400">Touch</span>
           </h2>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            Have questions about Shri Maheva Mustard Oil or want to connect for
-            business? We’re just a message away.
+            Have questions about Shri Maheva Mustard Oil or want to connect for business? We’re just a message away.
           </p>
         </div>
 
@@ -65,38 +66,24 @@ const Contact = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition text-center">
             <FiMapPin className="text-yellow-400 text-4xl mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Our Location
-            </h3>
-            <p className="text-gray-600">
-              <br />
-              Pinahat Agra – 283123
-            </p>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Location</h3>
+            <p className="text-gray-600">Pinahat Agra – 283123</p>
           </div>
-
           <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition text-center">
             <FiPhone className="text-yellow-400 text-4xl mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Call Us
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Call Us</h3>
             <p className="text-gray-600">+91 6395291600</p>
           </div>
-
           <div className="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition text-center">
             <FiMail className="text-yellow-400 text-4xl mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Email Us
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Email Us</h3>
             <p className="text-gray-600">vipuloilmill@gmail.com</p>
           </div>
         </div>
 
-        {/* Contact Form Card */}
+        {/* Contact Form */}
         <div className="max-w-3xl mx-auto bg-white p-10 rounded-2xl shadow-lg">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-            Send Us a Message
-          </h3>
-
+          <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Send Us a Message</h3>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-gray-700 mb-1">Name</label>
